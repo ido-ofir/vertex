@@ -61,6 +61,13 @@ html, body{
     width: 133px;
     float: right;
 }
+.save-btn{
+    position: absolute;
+    top: 31px;
+    right: 254px;
+    height: 29px;
+    width: 86px;
+}
 #bg{
     z-index: 1;
     background-size: cover;

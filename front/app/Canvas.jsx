@@ -41,6 +41,14 @@ module.exports = React.createClass({
             grid: this.props.data.grid
         };
     },
+    clear(){
+        elements.dots.forEach((dot)=>{ this.removeDot(dot)});
+        elements.lines.forEach((line)=>{ this.removeLine(line[0], line[1])});
+        elements.faces.forEach((face)=>{ this.removeFace(face)});
+        elements.dots = [];
+        elements.lines = [];
+        elements.faces = [];
+    },
     addDot(vIndex, options) {
         options = options || {};
         var vertex = this.props.data.source[vIndex];

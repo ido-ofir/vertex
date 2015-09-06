@@ -278,6 +278,13 @@ module.exports = React.createClass({
         this.setState({symmetric: !this.state.symmetric});
     },
     toggleData(){
+        if(!this.state.showData){
+            var text = JSON.stringify(this.state);
+            setTimeout(() => {
+                this.refs.text.getDOMNode().value = text;
+            }, 100);
+
+        }
         this.setState({showData: !this.state.showData});
     },
     toggleImage(){
@@ -295,26 +302,28 @@ module.exports = React.createClass({
         }
         this.setState({source: source});
     },
+    getData(){
+        try{
+            var value = JSON.parse(this.refs.text.getDOMNode().value);
+            if(value) this.execData(value);
+        }
+        catch(err){
+            alert(err);
+        }
+    },
+    execData(data){
+        canvas.clear();
+        data.dots.forEach((dot)=>{ canvas.addDot(dot)});
+        data.lines.forEach((line)=>{ canvas.addLine(line[0], line[1])});
+        data.faces.forEach((face)=>{ canvas.addFace(face)});
+        this.setState(data);
+    },
     renderData(){
         if(!this.state.showData) return;
-        var source = utils.stringifyArray(this.state.source);
-        var dots = utils.stringifyArray(this.state.dots);
-        var lines = utils.stringifyArray(this.state.lines);
-        var faces = utils.stringifyArray(this.state.faces);
-        var text = `module.exports = {
-    mode: '${data.mode}',
-    symmetric: ${data.symmetric},
-    markers: [],
-    wireframe: ${data.wireframe},
-    grid: ${data.grid},
-    source: ${source},
-    dots: ${dots},
-    lines: ${lines},
-    faces: ${faces}
-};`;
         return (
             <div className="box" style={{ zIndex: 50 }}>
-                <textarea style={{width: '100%', height: '100%'}} value={ text }></textarea>
+                <textarea style={{width: '100%', height: '100%'}} ref="text"></textarea>
+                <button className="save-btn" onClick={ this.getData }> Ok </button>
             </div>
         );
     },

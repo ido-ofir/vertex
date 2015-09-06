@@ -77,7 +77,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "5b09bd1c297476a72342"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "24fb7d12c1e327940ad7"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -31193,6 +31193,14 @@
 	        this.setState({ symmetric: !this.state.symmetric });
 	    },
 	    toggleData: function toggleData() {
+	        var _this2 = this;
+
+	        if (!this.state.showData) {
+	            var text = JSON.stringify(this.state);
+	            setTimeout(function () {
+	                _this2.refs.text.getDOMNode().value = text;
+	            }, 100);
+	        }
 	        this.setState({ showData: !this.state.showData });
 	    },
 	    toggleImage: function toggleImage() {
@@ -31212,17 +31220,38 @@
 	        }
 	        this.setState({ source: source });
 	    },
+	    getData: function getData() {
+	        try {
+	            var value = JSON.parse(this.refs.text.getDOMNode().value);
+	            if (value) this.execData(value);
+	        } catch (err) {
+	            alert(err);
+	        }
+	    },
+	    execData: function execData(data) {
+	        canvas.clear();
+	        data.dots.forEach(function (dot) {
+	            canvas.addDot(dot);
+	        });
+	        data.lines.forEach(function (line) {
+	            canvas.addLine(line[0], line[1]);
+	        });
+	        data.faces.forEach(function (face) {
+	            canvas.addFace(face);
+	        });
+	        this.setState(data);
+	    },
 	    renderData: function renderData() {
 	        if (!this.state.showData) return;
-	        var source = utils.stringifyArray(this.state.source);
-	        var dots = utils.stringifyArray(this.state.dots);
-	        var lines = utils.stringifyArray(this.state.lines);
-	        var faces = utils.stringifyArray(this.state.faces);
-	        var text = 'module.exports = {\n    mode: \'' + data.mode + '\',\n    symmetric: ' + data.symmetric + ',\n    markers: [],\n    wireframe: ' + data.wireframe + ',\n    grid: ' + data.grid + ',\n    source: ' + source + ',\n    dots: ' + dots + ',\n    lines: ' + lines + ',\n    faces: ' + faces + '\n};';
 	        return React.createElement(
 	            'div',
 	            { className: 'box', style: { zIndex: 50 } },
-	            React.createElement('textarea', { style: { width: '100%', height: '100%' }, value: text })
+	            React.createElement('textarea', { style: { width: '100%', height: '100%' }, ref: 'text' }),
+	            React.createElement(
+	                'button',
+	                { className: 'save-btn', onClick: this.getData },
+	                ' Ok '
+	            )
 	        );
 	    },
 	    renderImage: function renderImage() {
@@ -31533,7 +31562,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body{\n    height: 100%;\n    margin: 0;\n    overflow: hidden;\n}\n*{\n    box-sizing: border-box;\n}\n.box{\n    position: absolute;\n    top:0;\n    right:0;\n    left:0;\n    bottom:0;\n}\n.controls{\n    position: absolute;\n    top: 20px;\n    right:20px;\n    padding: 10px;\n    width:240px;\n    z-index: 60;\n    overflow: auto;\n}\n#canvas{\n    position: absolute;\n    top: 0;\n    left:0;\n    right:0;\n    bottom:0;\n    z-index: 2;\n    -webkit-user-select: none;  /* Chrome all / Safari all */\n    -moz-user-select: none;     /* Firefox all */\n    -ms-user-select: none;      /* IE 10+ */\n    user-select: none;          /* Likely future */\n}\n.scroll{\n    overflow: auto;\n}\n.vertices{\n    position: absolute;\n    top:0;\n    right:0;\n    left:0;\n    height: 33%;\n    overflow: auto;\n}\n.lines{\n    position: absolute;\n    top:33%;\n    right:0;\n    left:0;\n    bottom:33%;\n}\n.vertex{\n    background: #fff;\n    padding: 10px;\n    border: 1px solid #ddd;\n    border-radius: 4px;\n    margin-top: 13px;\n    width: 133px;\n    float: right;\n}\n#bg{\n    z-index: 1;\n    background-size: cover;\n}\n.header{\n    position: absolute;\n    height: 40px;\n    right:0;\n    left:0;\n    top:0;\n    text-align: center;\n    font-size: 20px;\n    line-height: 40px;\n    border-bottom:1px solid #ddd;\n}\n.line{\n    border-bottom: 1px solid #ddd;\n    padding: 6px;\n}\n.btn{\n    display: inline-block;\n    padding: 6px 10px;\n    background: #eee;\n    cursor: pointer;\n    border: 1px solid #ddd;\n    border-radius: 4px;\n    margin: 0 6px;\n}\n.icon{\n    background: url(" + __webpack_require__(252) + ");\n    width: 31px;\n    height: 31px;\n}\n.icon.active{\n\n}\n.wirframe-icon{\n    background-position-x: 204px;\n    background-position-y: 419px;\n}\n.wirframe-icon.active{\n    background-position-x: 204px;\n    background-position-y: 451px;\n}\n\n.grid-icon{\n     background-position-x: 125px;\n     background-position-y: 287px;\n }\n.grid-icon.active{\n    background-position-x: 125px;\n    background-position-y: 320px;\n}\n.symmetric-icon{\n    background-position-x: 362px;\n    background-position-y: 670px;\n}\n.symmetric-icon.active{\n    background-position-x: 362px;\n    background-position-y: 700px;\n}\n\n.data-icon{\n    background-position-x: 401px;\n    background-position-y: 550px;\n }\n\n.data-icon{\n    background-position-x: 401px;\n    background-position-y: 579px;\n}\n.image-icon{\n    background-position-x: 125px;\n    background-position-y: 609px;\n}\n.image-icon.active{\n    background-position-x: 125px;\n    background-position-y: 639px;\n}\n\n.image{\n    background-repeat: no-repeat;\n    background-position: center center;\n    background-size: 608px;\n}\n\n", ""]);
+	exports.push([module.id, "html, body{\n    height: 100%;\n    margin: 0;\n    overflow: hidden;\n}\n*{\n    box-sizing: border-box;\n}\n.box{\n    position: absolute;\n    top:0;\n    right:0;\n    left:0;\n    bottom:0;\n}\n.controls{\n    position: absolute;\n    top: 20px;\n    right:20px;\n    padding: 10px;\n    width:240px;\n    z-index: 60;\n    overflow: auto;\n}\n#canvas{\n    position: absolute;\n    top: 0;\n    left:0;\n    right:0;\n    bottom:0;\n    z-index: 2;\n    -webkit-user-select: none;  /* Chrome all / Safari all */\n    -moz-user-select: none;     /* Firefox all */\n    -ms-user-select: none;      /* IE 10+ */\n    user-select: none;          /* Likely future */\n}\n.scroll{\n    overflow: auto;\n}\n.vertices{\n    position: absolute;\n    top:0;\n    right:0;\n    left:0;\n    height: 33%;\n    overflow: auto;\n}\n.lines{\n    position: absolute;\n    top:33%;\n    right:0;\n    left:0;\n    bottom:33%;\n}\n.vertex{\n    background: #fff;\n    padding: 10px;\n    border: 1px solid #ddd;\n    border-radius: 4px;\n    margin-top: 13px;\n    width: 133px;\n    float: right;\n}\n.save-btn{\n    position: absolute;\n    top: 31px;\n    right: 254px;\n    height: 29px;\n    width: 86px;\n}\n#bg{\n    z-index: 1;\n    background-size: cover;\n}\n.header{\n    position: absolute;\n    height: 40px;\n    right:0;\n    left:0;\n    top:0;\n    text-align: center;\n    font-size: 20px;\n    line-height: 40px;\n    border-bottom:1px solid #ddd;\n}\n.line{\n    border-bottom: 1px solid #ddd;\n    padding: 6px;\n}\n.btn{\n    display: inline-block;\n    padding: 6px 10px;\n    background: #eee;\n    cursor: pointer;\n    border: 1px solid #ddd;\n    border-radius: 4px;\n    margin: 0 6px;\n}\n.icon{\n    background: url(" + __webpack_require__(252) + ");\n    width: 31px;\n    height: 31px;\n}\n.icon.active{\n\n}\n.wirframe-icon{\n    background-position-x: 204px;\n    background-position-y: 419px;\n}\n.wirframe-icon.active{\n    background-position-x: 204px;\n    background-position-y: 451px;\n}\n\n.grid-icon{\n     background-position-x: 125px;\n     background-position-y: 287px;\n }\n.grid-icon.active{\n    background-position-x: 125px;\n    background-position-y: 320px;\n}\n.symmetric-icon{\n    background-position-x: 362px;\n    background-position-y: 670px;\n}\n.symmetric-icon.active{\n    background-position-x: 362px;\n    background-position-y: 700px;\n}\n\n.data-icon{\n    background-position-x: 401px;\n    background-position-y: 550px;\n }\n\n.data-icon{\n    background-position-x: 401px;\n    background-position-y: 579px;\n}\n.image-icon{\n    background-position-x: 125px;\n    background-position-y: 609px;\n}\n.image-icon.active{\n    background-position-x: 125px;\n    background-position-y: 639px;\n}\n\n.image{\n    background-repeat: no-repeat;\n    background-position: center center;\n    background-size: 608px;\n}\n\n", ""]);
 
 	// exports
 
@@ -31987,6 +32016,22 @@
 	            grid: this.props.data.grid
 	        };
 	    },
+	    clear: function clear() {
+	        var _this = this;
+
+	        elements.dots.forEach(function (dot) {
+	            _this.removeDot(dot);
+	        });
+	        elements.lines.forEach(function (line) {
+	            _this.removeLine(line[0], line[1]);
+	        });
+	        elements.faces.forEach(function (face) {
+	            _this.removeFace(face);
+	        });
+	        elements.dots = [];
+	        elements.lines = [];
+	        elements.faces = [];
+	    },
 	    addDot: function addDot(vIndex, options) {
 	        options = options || {};
 	        var vertex = this.props.data.source[vIndex];
@@ -32097,7 +32142,7 @@
 	        return false;
 	    },
 	    loadWireFrame: function loadWireFrame(options) {
-	        var _this = this;
+	        var _this2 = this;
 
 	        var loader = new THREE.JSONLoader();
 	        loader.load(options.path, function (geometry) {
@@ -32110,9 +32155,9 @@
 	                wireframe: true
 	            });
 	            var wireframe = new THREE.Mesh(geometry, material);
-	            if (_this.state.wireframe) {
+	            if (_this2.state.wireframe) {
 	                stage.space.add(wireframe);
-	                _this.setState({ wireframe: true });
+	                _this2.setState({ wireframe: true });
 	            }
 	            elements.wireframe = wireframe;
 	        });
@@ -32186,7 +32231,7 @@
 	        }
 	    },
 	    componentDidMount: function componentDidMount() {
-	        var _this2 = this;
+	        var _this3 = this;
 
 	        stage = window.stage = Stage3d(this.getDOMNode());
 	        //elements.markers = make.markers(this.props.data.source[0]);
@@ -32195,13 +32240,13 @@
 	        //});
 	        stage.onClick(elements.dots, function (dot) {
 	            console.log('dot');
-	            _this2.props.onVertexClick(dot.object.vIndex);
+	            _this3.props.onVertexClick(dot.object.vIndex);
 
 	            return false;
 	        });
 	        stage.onClick(elements.gridDots, function (gridDot) {
 	            console.log('gridDot');
-	            _this2.props.onVertexClick(gridDot.object.vIndex);
+	            _this3.props.onVertexClick(gridDot.object.vIndex);
 	        });
 	        this.props.onLoad(this);
 	    },
