@@ -238,6 +238,7 @@ module.exports = React.createClass({
         }
     },
     onVertexClick(vIndex){
+        console.log('vertex click');
         actions = [];
         face.push(vIndex);
         var markers = this.state.markers;
@@ -276,6 +277,14 @@ module.exports = React.createClass({
     },
     toggleSymmetric(){
         this.setState({symmetric: !this.state.symmetric});
+    },
+    removeDotLinesAndFaces(vIndex){
+        canvas.removeDotLinesAndFaces(vIndex);
+        if(this.state.symmetric){
+            canvas.removeDotLinesAndFaces(RVIndex(vIndex));
+        }
+        this.removeMarkers();
+        face = [];
     },
     toggleData(){
         if(!this.state.showData){
@@ -346,6 +355,7 @@ module.exports = React.createClass({
                           toggleData={ this.toggleData }
                           toggleImage={ this.toggleImage }
                           toggleSymmetric={ this.toggleSymmetric }
+                          removeDotLinesAndFaces={ this.removeDotLinesAndFaces }
                           vIndex={ this.state.vIndex }/>
                 { this.renderData() }
             </div>

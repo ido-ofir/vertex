@@ -131,7 +131,30 @@ module.exports = React.createClass({
             }
         }
     },
-
+    removeDotLinesAndFaces(vIndex){
+        var line, face;
+        for(var i = 0; i < elements.dots.length; i++){
+            if(elements.dots[i].vIndex === vIndex){
+                stage.space.remove(elements.dots[i]);
+                elements.dots.splice(i, 1);
+            }
+        }
+        for(i = 0; i < elements.lines.length; i++){
+            line = elements.lines[i];
+            if(vIndex === line.vIndexA || vIndex === line.vIndexB){
+                console.log('remove dot');
+                stage.space.remove(line);
+                elements.lines.splice(i, 1);
+            }
+        }
+        for(i = 0; i < elements.faces.length; i++){
+            face = elements.faces[i];
+            if(vIndex === face.vIndexA || vIndex === face.vIndexB || vIndex === face.vIndexC){
+                stage.space.remove(face);
+                elements.faces.splice(i, 1);
+            }
+        }
+    },
     onClick(targets, listener){
         stage.onClick(targets, listener);
     },
@@ -253,13 +276,11 @@ module.exports = React.createClass({
         //    console.log('marker');
         //});
         stage.onClick(elements.dots,(dot) => {
-            console.log('dot');
             this.props.onVertexClick(dot.object.vIndex);
 
             return false;
         });
         stage.onClick(elements.gridDots,(gridDot) => {
-            console.log('gridDot');
             this.props.onVertexClick(gridDot.object.vIndex);
         });
         this.props.onLoad(this);

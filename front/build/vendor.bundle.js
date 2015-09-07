@@ -77,7 +77,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3a4ce603c45e44d9eff1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ead0f4accc4705c7e88e"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -23751,6 +23751,7 @@
 	        }
 	    },
 	    onVertexClick: function onVertexClick(vIndex) {
+	        console.log('vertex click');
 	        actions = [];
 	        face.push(vIndex);
 	        var markers = this.state.markers;
@@ -23787,6 +23788,14 @@
 	    },
 	    toggleSymmetric: function toggleSymmetric() {
 	        this.setState({ symmetric: !this.state.symmetric });
+	    },
+	    removeDotLinesAndFaces: function removeDotLinesAndFaces(vIndex) {
+	        canvas.removeDotLinesAndFaces(vIndex);
+	        if (this.state.symmetric) {
+	            canvas.removeDotLinesAndFaces(RVIndex(vIndex));
+	        }
+	        this.removeMarkers();
+	        face = [];
 	    },
 	    toggleData: function toggleData() {
 	        var _this2 = this;
@@ -23868,6 +23877,7 @@
 	                toggleData: this.toggleData,
 	                toggleImage: this.toggleImage,
 	                toggleSymmetric: this.toggleSymmetric,
+	                removeDotLinesAndFaces: this.removeDotLinesAndFaces,
 	                vIndex: this.state.vIndex }),
 	            this.renderData()
 	        );
@@ -24710,7 +24720,30 @@
 	            }
 	        }
 	    },
-
+	    removeDotLinesAndFaces: function removeDotLinesAndFaces(vIndex) {
+	        var line, face;
+	        for (var i = 0; i < elements.dots.length; i++) {
+	            if (elements.dots[i].vIndex === vIndex) {
+	                stage.space.remove(elements.dots[i]);
+	                elements.dots.splice(i, 1);
+	            }
+	        }
+	        for (i = 0; i < elements.lines.length; i++) {
+	            line = elements.lines[i];
+	            if (vIndex === line.vIndexA || vIndex === line.vIndexB) {
+	                console.log('remove dot');
+	                stage.space.remove(line);
+	                elements.lines.splice(i, 1);
+	            }
+	        }
+	        for (i = 0; i < elements.faces.length; i++) {
+	            face = elements.faces[i];
+	            if (vIndex === face.vIndexA || vIndex === face.vIndexB || vIndex === face.vIndexC) {
+	                stage.space.remove(face);
+	                elements.faces.splice(i, 1);
+	            }
+	        }
+	    },
 	    onClick: function onClick(targets, listener) {
 	        stage.onClick(targets, listener);
 	    },
@@ -24835,13 +24868,11 @@
 	        //    console.log('marker');
 	        //});
 	        stage.onClick(elements.dots, function (dot) {
-	            console.log('dot');
 	            _this3.props.onVertexClick(dot.object.vIndex);
 
 	            return false;
 	        });
 	        stage.onClick(elements.gridDots, function (gridDot) {
-	            console.log('gridDot');
 	            _this3.props.onVertexClick(gridDot.object.vIndex);
 	        });
 	        this.props.onLoad(this);
@@ -25033,8 +25064,16 @@
 	                null,
 	                'Z ',
 	                React.createElement(PositionInput, { value: vertex[2], onChange: this.changeZ })
+	            ),
+	            React.createElement(
+	                'div',
+	                { style: { background: '#ddd', height: '20px' }, onClick: this.removeDot },
+	                'Delete'
 	            )
 	        );
+	    },
+	    removeDot: function removeDot() {
+	        this.props.removeDotLinesAndFaces(this.props.vIndex);
 	    },
 	    changeX: function changeX(v) {
 	        var vIndex = this.props.vIndex;

@@ -34,9 +34,15 @@ module.exports = React.createClass({
                 <div>
                     Z <PositionInput value={ vertex[2] } onChange={ this.changeZ }/>
                 </div>
+                <div style={{background: '#ddd', height:'20px'}} onClick={ this.removeDot }>
+                    Delete
+                </div>
             </div>
 
         );
+    },
+    removeDot(){
+        this.props.removeDotLinesAndFaces(this.props.vIndex);
     },
     changeX(v){
         var vIndex = this.props.vIndex;
