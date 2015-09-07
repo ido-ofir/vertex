@@ -25,6 +25,7 @@ module.exports = React.createClass({
         if(!vertex) return;
         return (
             <div className="vertex">
+                { vIndex }
                 <div>
                     X <PositionInput value={ vertex[0] } onChange={ this.changeX }/>
                 </div>
