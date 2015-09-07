@@ -77,7 +77,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ead0f4accc4705c7e88e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "f2ab22f92e894a88f3c5"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -25047,6 +25047,7 @@
 	        return React.createElement(
 	            'div',
 	            { className: 'vertex' },
+	            vIndex,
 	            React.createElement(
 	                'div',
 	                null,
