@@ -1,0 +1,22 @@
+{
+  "name": "vertex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ido-ofir/vertex.git"
+  },
+  "author": "ido-ofir",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ido-ofir/vertex/issues"
+  },
+  "homepage": "https://github.com/ido-ofir/vertex#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}

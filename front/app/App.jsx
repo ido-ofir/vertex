@@ -279,7 +279,7 @@ module.exports = React.createClass({
     },
     toggleData(){
         if(!this.state.showData){
-            var text = JSON.stringify(this.state);
+            var text = JSON.stringify(this.state, null, 4);
             setTimeout(() => {
                 this.refs.text.getDOMNode().value = text;
             }, 100);
