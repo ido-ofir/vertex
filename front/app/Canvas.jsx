@@ -4,6 +4,7 @@ var elements = window.elements = require('./elements.js');
 var make = window.make = require('./make.js');
 var utils = window.utils = require('./utils.js');
 var Stage3d = require('./Stage3d');
+var particles = require('./particles');
 // ok
 var stage, half = 0;
 
@@ -49,6 +50,11 @@ module.exports = React.createClass({
         elements.lines = [];
         elements.faces = [];
     },
+    makeParticleSystem(){
+      var particleSystem = particles.makeSystem();
+      particleSystem.sortParticles = true;
+      stage.space.add(particleSystem);
+    },
     addDot(vIndex, options) {
         options = options || {};
         var vertex = this.props.data.source[vIndex];
@@ -86,7 +92,6 @@ module.exports = React.createClass({
             if(elements.dots[i].vIndex === vIndex){
                 stage.space.remove(elements.dots[i]);
                 elements.dots.splice(i, 1);
-                return;
             }
         }
     },
@@ -98,15 +103,14 @@ module.exports = React.createClass({
             if((a === vIndexA && b === vIndexB) || (b === vIndexA && a === vIndexB)){
                 stage.space.remove(elements.lines[i]);
                 elements.lines.splice(i, 1);
-                return;
             }
         }
     },
     removeFace (face) {
+      if(!face || !face.indexOf) return;
         var el;
         for(var i = 0; i < elements.faces.length; i++){
             el = elements.faces[i];
-            console.log(face, el.vIndexA, el.vIndexB, el.vIndexC);
             if(face.indexOf(el.vIndexA) > -1 && face.indexOf(el.vIndexB) > -1 && face.indexOf(el.vIndexC) > -1){
                 stage.space.remove(el);
                 elements.faces.splice(i, 1);

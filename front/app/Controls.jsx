@@ -12,12 +12,56 @@ var buttonStyle = {
 
 var faces = [];
 
-
 var Face = require('./Face.jsx');
 var Line = require('./Line.jsx');
 var Vertex = require('./Vertex.jsx');
 var PositionInput = require('./PositionInput.jsx');
 
+function clean(data) {
+    var source = data.source;
+    var dots = data.dots;
+    var lines = data.lines;
+    var faces = data.faces;
+    dots = dots.filter(function(dot, i){
+        for(var k = (i + 1); k < dots.length; k++){
+            if(dot === dots[k]) {
+                console.log('clearing dot ' + dot);
+                return false;
+            }
+        }
+        return true;
+    });
+    lines = lines.filter(function(line, i){
+        if(line[0] === line[1]) return false;
+        if(dots.indexOf(line[0]) === -1 || dots.indexOf(line[1]) === -1 ) return false;
+        for(var k = (i + 1); k < lines.length; k++){
+            if((line[0] === lines[k][0]) && (line[1]=== lines[k][1])) {
+                console.log('clearing line [' + line[0] + ', ' + line[1] + ']');
+                return false;
+            }
+            if((line[0] === lines[k][1]) && (line[1]=== lines[k][0])) {
+                console.log('clearing line [' + line[0] + ', ' + line[1] + ']');
+                return false;
+            }
+        }
+        return true;
+    });
+    faces = faces.filter(function(face, i){
+        if(face[0] === face[1] || face.indexOf(face[2]) < 2) return false;
+        if(dots.indexOf(face[0]) === -1 || dots.indexOf(face[1]) === -1  || dots.indexOf(face[2]) === -1) return false;
+        for(var k = (i + 1); k < faces.length; k++){
+            if((face.indexOf(faces[k][0]) > -1) && (face.indexOf(faces[k][1]) > -1) && (face.indexOf(faces[k][2]) > -1)) {
+                console.log('clearing face [' + face[0] + ', ' + face[1] + ', ' + face[2] + ']');
+                return false;
+            }
+        }
+        return true;
+    });
+    data.dots = dots;
+    data.lines = lines;
+    data.faces = faces;
+    return data;
+}
 
 module.exports = React.createClass({
     renderVertex(vIndex){
@@ -59,6 +103,7 @@ module.exports = React.createClass({
         var vIndex = this.props.vIndex;
         var vertex = this.props.data.source[vIndex];
         if(vertex) this.props.setVertex(vIndex, [vertex[0], vertex[1], v]);
+
     },
     render () {
         var data = this.props.data;

@@ -1,4 +1,4 @@
-require('./style.css');
+69+require('./style.css');
 
 var data = window.data = require('./data');
 var elements = window.elements = require('./elements.js');
@@ -114,18 +114,19 @@ module.exports = React.createClass({
             opacity: 0.5,
             visible: true
         });
-        canvas.makeGrid(data.source);
-        if(data.dots.length){
-            data.dots.forEach(canvas.addDot)
-        }
-        if(data.lines.length){
-            data.lines.forEach((line)=>{
-                canvas.addLine(line[0], line[1]);
-            })
-        }
-        if(data.faces.length){
-            data.faces.forEach(canvas.addFace)
-        }
+        // canvas.makeGrid(data.source);
+        // if(data.dots.length){
+        //     data.dots.forEach(canvas.addDot)
+        // }
+        // if(data.lines.length){
+        //     data.lines.forEach((line)=>{
+        //         canvas.addLine(line[0], line[1]);
+        //     })
+        // }
+        // if(data.faces.length){
+        //     data.faces.forEach(canvas.addFace)
+        // }
+        canvas.makeParticleSystem();
     },
     addDot(vIndex){
         var dots = this.state.dots;
@@ -279,16 +280,57 @@ module.exports = React.createClass({
         this.setState({symmetric: !this.state.symmetric});
     },
     removeDotLinesAndFaces(vIndex){
-        canvas.removeDotLinesAndFaces(vIndex);
-        if(this.state.symmetric){
-            canvas.removeDotLinesAndFaces(RVIndex(vIndex));
+      var vLine, vFace;
+      var data = this.state;
+      var rvIndex = RVIndex(vIndex);
+      canvas.removeDot(vIndex);
+      if(data.symmetric){
+        canvas.removeDot(rvIndex);
+      }
+      data.dots = data.dots.filter((dot, index)=>{
+        if(dot === vIndex){
+          return false;
         }
+        if(data.symmetric){
+          if(dot === rvIndex){
+            return false;
+          }
+        }
+        return true;
+      })
+      data.lines = data.lines.filter((line, index)=>{
+        if(line[0] === vIndex || line[1] === vIndex){
+          canvas.removeLine(line[0], line[1]);
+          return false;
+        }
+        if(data.symmetric){
+          if(line[0] === rvIndex || line[1] === rvIndex){
+            canvas.removeLine(line[0], line[1]);
+            return false;
+          }
+        }
+        return true;
+      })
+      data.faces = data.faces.filter((face, index)=>{
+        if(face.indexOf(vIndex) > -1){
+          canvas.removeFace(face);
+          return false;
+        }
+        if(data.symmetric){
+          if(face.indexOf(rvIndex) > -1){
+            canvas.removeFace(face);
+            return false;
+          }
+        }
+        return true;
+      })
         this.removeMarkers();
         face = [];
+        this.setState(data);
     },
     toggleData(){
         if(!this.state.showData){
-            var text = JSON.stringify(this.state, null, 4);
+            var text = JSON.stringify(this.state);
             setTimeout(() => {
                 this.refs.text.getDOMNode().value = text;
             }, 100);
